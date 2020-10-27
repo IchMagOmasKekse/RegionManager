@@ -11,22 +11,20 @@ import me.ichmagomaskekse.de.RS;
 
 public class IDAtlas {
 	
-	private static File file = null;
-	private static FileConfiguration cfg = null;
-	private static ArrayList<String> ids = new ArrayList<String>();
+	public static ArrayList<String> ids = new ArrayList<String>();
 	
 	public IDAtlas() {
-		RS.getInstance().saveResource("/id_atlas.yml", false);
+		RS.getInstance().saveResource("id_atlas.yml", false);
 		loadIDs();
 	}
 	
 	/* IDs laden.
-	 * Wird beim Start des Plugins einmal ausgeführt */
-	private static void loadIDs() {
-		file = new File(RS.home_path);
-		cfg = YamlConfiguration.loadConfiguration(file);
+	 * Wird beim Start des Plugins einmal ausgefï¿½hrt */
+	public static void loadIDs() {
+		File file = new File(RS.home_path+"id_atlas.yml");
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 		
-		if(ids.size() != cfg.getStringList("IDs").size()) saveIDs();
+		
 		ids = (ArrayList<String>) cfg.getStringList("IDs");
 		
 	}
@@ -36,12 +34,50 @@ public class IDAtlas {
 	 */
 	public static boolean saveID(String id) {
 		ArrayList<String> list = new ArrayList<String>();
-		file = new File(RS.home_path);
-		cfg = YamlConfiguration.loadConfiguration(file);
+		
+		File file = new File(RS.home_path+"id_atlas.yml");
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 		
 		list = (ArrayList<String>) cfg.getStringList("IDs");
+		
+		if(list == null) list = new ArrayList<String>();
+		
+		
 		if(idIsRegistered(id) == false) {
 			list.add(id);
+			cfg.set("IDs", list);
+			try {
+				cfg.save(file);
+				
+				/*
+				 * zum Schluss werden alle IDs nocheinmal geladen,
+				 * um die ArrayList namens 'ids' auf dem neusten Stand zu halten
+				 */
+				loadIDs();
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+	
+	/*
+	 * LÃ¶scht eine ID um sie wieder zu Vergebeung frei zu geben
+	 */
+	public static boolean removeID(String id) {
+		ArrayList<String> list = new ArrayList<String>();
+		File file = new File(RS.home_path+"id_atlas.yml");
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+		
+		list = (ArrayList<String>) cfg.getStringList("IDs");
+		
+		if(list == null) list = new ArrayList<String>();
+		
+		if(idIsRegistered(id)) {
+			list.remove(id);
+			ids.remove(id);
+			cfg.set("IDs", ids);
 			try {
 				cfg.save(file);
 				
@@ -66,8 +102,8 @@ public class IDAtlas {
 	 * um keine Datenverluste zu erhalten.
 	 */
 	public static boolean saveIDs() {
-		file = new File(RS.home_path);
-		cfg = YamlConfiguration.loadConfiguration(file);
+		File file = new File(RS.home_path+"id_atlas.yml");
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 		
 		cfg.set("IDs", ids);
 		try {
@@ -80,7 +116,7 @@ public class IDAtlas {
 	}
 	
 	/*
-	 * Überprüft, ob eine ID bereits verwendet wird
+	 * ï¿½berprï¿½ft, ob eine ID bereits verwendet wird
 	 */
 	public static boolean idIsRegistered(String id) {
 		return ids.contains(id);

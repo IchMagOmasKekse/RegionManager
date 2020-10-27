@@ -1,0 +1,32 @@
+Region:
+  Creator:
+    UUID: e93f14bb-71c1-4379-bcf8-6dcc0a409ed9
+    Name: IchMagOmasKekse
+  ID: plot_3956
+  Nickname: none
+  is Owned: false
+  Owner: none
+  Admins: none
+  Member: '[]'
+  Settings:
+    Link: PH4613r315-o48zM73JHw-1nMX0Xq2y7
+    Link Blocks: 3
+    Link Blocksize: 10
+  Price:
+    money1: 100.0
+    money2: 1.0
+  Sign:
+    World: world
+    X: -35.0
+    Y: 104.0
+    Z: 67.0
+  Pos1:
+    World: world
+    X: -42.0
+    Y: 103.0
+    Z: 63.0
+  Pos2:
+    World: world
+    X: -35.0
+    Y: 107.0
+    Z: 70.0

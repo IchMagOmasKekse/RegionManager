@@ -20,7 +20,8 @@ public class Region {
 	private double xMax = 0;
 	private double yMax = 0;
 	private double zMax = 0;
-	private String name = "unnamed-";
+	@SuppressWarnings("unused")
+	private String name = "plot_????";
 	
 	public Region(Location pos1, Location pos2) {
 		this.pos1 = getPos1OrPos2(pos1.clone(), pos2.clone(), true);
@@ -39,7 +40,7 @@ public class Region {
 	}
 	
 	/*
-	 * TODO: getBlocks() gibt die Blöcke innerhalb eines Rects zurück und sortiert auf Wunsch die Luft aus
+	 * TODO: getBlocks() gibt die Blï¿½cke innerhalb eines Rects zurï¿½ck und sortiert auf Wunsch die Luft aus
 	 */
 	public List<Block> getBlocks(boolean withAir) {
 		List<Block> l = new LinkedList<Block>();
@@ -62,7 +63,7 @@ public class Region {
 	
 	
 	/*
-	 * TODO: isIn() gibt zurück, über eine Location sich innerhalb des SkyRects befindet
+	 * TODO: isIn() gibt zurï¿½ck, ï¿½ber eine Location sich innerhalb des SkyRects befindet
 	 */
 	public boolean isIn(Location loc) {
 		if(loc.getWorld() == world) {

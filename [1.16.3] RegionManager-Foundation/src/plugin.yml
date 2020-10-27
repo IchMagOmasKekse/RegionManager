@@ -1,0 +1,10 @@
+name: RegionManager
+author: IchMagOmasKekse
+version: 1.0
+api-version: 1.16
+
+main: me.ichmagomaskekse.de.RS
+commands:
+  gs:
+    description: 'Main command for region commands'
+    aliases: [grundstueck, plot]
