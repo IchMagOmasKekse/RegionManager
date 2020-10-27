@@ -1,14 +1,18 @@
 package me.ichmagomaskekse.de;
 
+import java.util.Random;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RS extends JavaPlugin {
 	/*
-	 * RS steht fÃ¼r RegionSystem
+	 * RS steht für RegionSystem
 	 */
 	
+	public static String home_path = "/plugins/RS/";
 	private static RS rs = null;
 	public static RS getInstance() {return rs;}
+	private static Random ran;
 	
 	@Override
 	public void onEnable() {
@@ -46,6 +50,11 @@ public class RS extends JavaPlugin {
 		 * Events werden registriert.
 		 */
 		
+	}
+	
+	public static String randomIDGenerator() {
+		//TODO: Ein 'Belegete-Id-Atlas' muss erstellt werden
+		return "unnamed-"+ran.nextInt(10000);
 	}
 	
 }
