@@ -1,1 +1,3 @@
 create selection: region.selection.create
+god permission: region.*
+get admin command info: region.command.admin

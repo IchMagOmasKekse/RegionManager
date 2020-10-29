@@ -32,6 +32,11 @@ public class SessionManager {
 	
 	public SessionManager() { }
 	
+	public static boolean removeSession(Player host) {
+		if(hasSession(host)) sessions.remove(host);
+		else return false;
+		return true;
+	}
 	
 	/*
 	 * newSession registriert eine neue PlayerSession für einen Spieler.
@@ -49,8 +54,8 @@ public class SessionManager {
 	}
 	
 	public static PlayerSession getSession(Player host) {
-		if(hasSession(host)) return sessions.get(host);
-		else return null;
+		if(hasSession(host) == false) newSession(host); 
+		return sessions.get(host);
 	}
 	
 	public static Location getSignLocation(String id) {
@@ -68,6 +73,7 @@ public class SessionManager {
 		File file = new File(RS.home_path+"GS/"+session.getID()+".yml");
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 		
+		
 		cfg.set("Region.Creator.UUID", session.getHost().getUniqueId().toString());
 		cfg.set("Region.Creator.Name", session.getHost().getName());
 		cfg.set("Region.ID", session.getID());
@@ -79,14 +85,22 @@ public class SessionManager {
 		cfg.set("Region.Settings.Link", createRandomSettingsLink());
 		cfg.set("Region.Settings.Link Blocks", amount_blocks);
 		cfg.set("Region.Settings.Link Blocksize", size_of_block);
+		cfg.set("Region.Village", "none");
 		
-		cfg.set("Region.Price.money1", 100d);
-		cfg.set("Region.Price.money2", 1d);
+		cfg.set("Region.Price.money1", 100.0d);
+		cfg.set("Region.Price.money2", 100.0d);
 		
 		cfg.set("Region.Sign.World", session.getSignLoc().getWorld().getName());
 		cfg.set("Region.Sign.X", session.getSignLoc().getX());
 		cfg.set("Region.Sign.Y", session.getSignLoc().getY());
 		cfg.set("Region.Sign.Z", session.getSignLoc().getZ());
+		
+		cfg.set("Region.Spawn.World", session.getSpawn().getWorld().getName());
+		cfg.set("Region.Spawn.X", session.getSpawn().getX());
+		cfg.set("Region.Spawn.Y", session.getSpawn().getY());
+		cfg.set("Region.Spawn.Z", session.getSpawn().getZ());
+		cfg.set("Region.Spawn.Yaw", session.getSpawn().getYaw());
+		cfg.set("Region.Spawn.Pitch", session.getSpawn().getPitch());
 		
 		cfg.set("Region.Pos1.World", session.getPos1().getWorld().getName());
 		cfg.set("Region.Pos1.X", session.getPos1().getX());
@@ -94,13 +108,14 @@ public class SessionManager {
 		cfg.set("Region.Pos1.Z", session.getPos1().getZ());
 		
 		cfg.set("Region.Pos2.World", session.getPos2().getWorld().getName());
-		cfg.set("Region.Pos2.X", session.getPos2().getX());
+		cfg.set("Region.Pos2.X", (session.getPos2().getX() + 1));
 		cfg.set("Region.Pos2.Y", session.getPos2().getY());
-		cfg.set("Region.Pos2.Z", session.getPos2().getZ());
+		cfg.set("Region.Pos2.Z", (session.getPos2().getZ() + 1));
 		
 		
 		try {
 			cfg.save(file);
+			removeSession(host);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -108,17 +123,19 @@ public class SessionManager {
 		return false;
 	}
 	
-	
+	public static String createRandomSettingsLink() {
+		return getRandomCode(amount_blocks, size_of_block);
+	}
 
 	/* Generiert einen zufälligen Code, welcher beliebig anpassbar ist */
-	public static String createRandomSettingsLink() {
-		if(amount_blocks < 1) amount_blocks = 1;
-		if(size_of_block < 6) size_of_block = 6;
+	public static String getRandomCode(int blocks, int blocksize) {
+		if(blocks < 1) blocks = 1;
+		if(blocksize < 6) blocksize = 6;
 		
 		String link = "";
 		
-		for(int i = 0; i != amount_blocks; i++) {
-			for(int ii = 0; ii != size_of_block; ii++) {
+		for(int i = 0; i != blocks; i++) {
+			for(int ii = 0; ii != blocksize; ii++) {
 				if(random.nextBoolean()) {
 					//Buchstabe
 					if(random.nextBoolean()) {
@@ -189,7 +206,7 @@ public class SessionManager {
 				}
 			}
 			
-			if((i == (amount_blocks - 1)) == false) link = link+seperator;
+			if((i == (blocks - 1)) == false) link = link+seperator;
 		}
 		return link;
 	}

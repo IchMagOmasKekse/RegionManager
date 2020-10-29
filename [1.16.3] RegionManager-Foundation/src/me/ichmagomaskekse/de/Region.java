@@ -26,13 +26,48 @@ public class Region {
 	public Region(Location pos1, Location pos2) {
 		this.pos1 = getPos1OrPos2(pos1.clone(), pos2.clone(), true);
 		this.pos2 = getPos1OrPos2(pos1.clone(), pos2.clone(), false);
+		
 		world = pos1.getWorld();
+		
 		this.xMin = getCorner1().getX();
 		this.yMin = getCorner1().getY();
 		this.zMin = getCorner1().getZ();
 		this.xMax = getCorner7().getX();
 		this.yMax = getCorner7().getY();
 		this.zMax = getCorner7().getZ();
+		
+		this.pos1.setY(0.0d);
+		this.pos2.setY(256.0d);
+		
+		this.yMin = this.pos1.getY();
+		this.yMax = this.pos2.getY();
+		
+	}
+	
+	/*
+	 * fixBecauseCreated() fixt die Location, damit die gesamte Größe der Region übernommen wird.
+	 * Diese Methode DARF nur einmal ausgeführt werden. Undzwar dann, wenn der Spieler /gs mksel ausführt.
+	 */
+	public void fixBecauseCreated() {
+		this.pos1 = getPos1OrPos2(pos1.clone(), pos2.clone(), true);
+		this.pos2 = getPos1OrPos2(pos1.clone(), pos2.clone(), false);
+		
+		this.pos2.add(1,0,1);
+		
+		world = pos1.getWorld();
+		
+		this.xMin = getCorner1().getX();
+		this.yMin = getCorner1().getY();
+		this.zMin = getCorner1().getZ();
+		this.xMax = getCorner7().getX();
+		this.yMax = getCorner7().getY();
+		this.zMax = getCorner7().getZ();
+		
+		this.pos1.setY(103.0d);
+		this.pos2.setY(110.0d);
+		
+		this.yMin = this.pos1.getY();
+		this.yMax = this.pos2.getY();
 	}
 	
 	public World getWorld() {
@@ -40,7 +75,20 @@ public class Region {
 	}
 	
 	/*
-	 * TODO: getBlocks() gibt die Bl�cke innerhalb eines Rects zur�ck und sortiert auf Wunsch die Luft aus
+	 * Füllt die Region mit komplett aus
+	 */
+	public void fill(Material mat) {
+		for(int x = (int)xMin; x != xMax; x++) {
+			for(int y = (int)yMin; y != yMax; y++) {
+				for(int z = (int)zMin; z != zMax; z++) {
+					new Location(getWorld(), x, y, z).getBlock().setType(mat);
+				}
+			}
+		}
+	}
+	
+	/*
+	 * TODO: getBlocks() gibt die Blöcke innerhalb einer Region zurück und sortiert auf Wunsch die Luft aus
 	 */
 	public List<Block> getBlocks(boolean withAir) {
 		List<Block> l = new LinkedList<Block>();
@@ -63,7 +111,7 @@ public class Region {
 	
 	
 	/*
-	 * TODO: isIn() gibt zur�ck, �ber eine Location sich innerhalb des SkyRects befindet
+	 * TODO: isIn() gibt zurück, über eine Location sich innerhalb der Region befindet
 	 */
 	public boolean isIn(Location loc) {
 		if(loc.getWorld() == world) {
@@ -159,7 +207,7 @@ public class Region {
 			
 			if(z1 > z2) fZ = z2;
 			else fZ = z1;
-		}else {
+		}else if(selectPos1 == false) {
 			if(x1 < x2) fX = x2;
 			else fX = x1;
 			
@@ -171,7 +219,18 @@ public class Region {
 		}
 		
 		l = new Location(Bukkit.getWorld("world"), fX, fY, fZ);
-		
 		return l;
+	}
+	
+	/*
+	 * getCenter() gibt die exakte Mitte des Körpers zurück.
+	 */
+	public Location getCenter() {
+		
+		double xDif = (xMax-xMin);
+		double yDif = (yMax-yMin);
+		double zDif = (zMax-zMin);
+		
+		return new Location(getWorld(), (xMax-(xDif/2)), (yMax-(yDif/2)), (zMax-(zDif/2)));
 	}
 }

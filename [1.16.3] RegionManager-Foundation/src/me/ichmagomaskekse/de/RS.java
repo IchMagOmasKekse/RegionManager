@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.ichmagomaskekse.de.atlas.IDAtlas;
 import me.ichmagomaskekse.de.commands.RegionCommands;
 import me.ichmagomaskekse.de.events.PlayerInteract;
+import me.ichmagomaskekse.de.village.VillageManager;
 
 public class RS extends JavaPlugin {
 	/*
@@ -21,6 +22,11 @@ public class RS extends JavaPlugin {
 	private static Random ran = new Random();
 	public static IDAtlas idatlas = null;
 	public static String noPerm = "§cDu hast kein Recht dazu!";
+	public static boolean debug = false;
+	public static final String none_uuid = "00d1a130-2e7e-4dd5-b2f2-5457ed0406c3";
+	
+	/* Temporäre API-Eibindung */
+	public static ServerSystem ss = ServerSystem.getInstance();
 	
 	@Override
 	public void onEnable() {
@@ -37,7 +43,18 @@ public class RS extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		
+		shutdown();
+		
 		super.onDisable();
+	}
+	
+	/*
+	 * Speichert alle Fortschritte und Daten, bevor das Plugin disabled wird.
+	 */
+	private void shutdown() {
+		
+		GSManager.saveAllGS();
+		
 	}
 	
 	private void preInit() {
@@ -63,6 +80,11 @@ public class RS extends JavaPlugin {
 		new PlayerInteract();
 		
 		this.getCommand("gs").setExecutor(new RegionCommands());
+		
+		new GSManager();
+		GSManager.loadAllGS();
+		
+		new VillageManager(false);
 	}
 	
 	public static String getRandomID() {
